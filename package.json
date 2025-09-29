@@ -1,0 +1,80 @@
+{
+  "name": "@happy-fox/server-actions",
+  "version": "0.1.0-beta.1",
+  "description": "Lightweight React Server Actions library with TypeScript support",
+  "author": {
+    "name": "Adrian M. A. Urrea",
+    "email": "yasnoadriandatos@gmail.com"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/happy-fox-devs/server-actions.git"
+  },
+  "homepage": "https://github.com/happy-fox-devs/server-actions#readme",
+  "bugs": {
+    "url": "https://github.com/happy-fox-devs/server-actions/issues"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rimraf dist",
+    "prepare": "pnpm run build",
+    "prepare-github": "node scripts/prepare-github.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "react",
+    "server-actions",
+    "nextjs",
+    "formdata",
+    "typescript",
+    "swr",
+    "hooks",
+    "react-hooks"
+  ],
+  "license": "MIT",
+  "packageManager": "pnpm@10.17.1",
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "@types/react": "^19.1.15",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
+  }
+}
