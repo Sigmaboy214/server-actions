@@ -51,6 +51,7 @@ export function useSAR<T>({
   revalidateOnFocus = false,
   dedupingInterval = 2000,
   executeOnMount = true,
+  initialExecuteData,
   onSuccess,
   onError,
 }: SAROptions<T>): SARReturn<T> {
@@ -258,9 +259,9 @@ export function useSAR<T>({
     if (!executeOnMount) return;
 
     if ((revalidateOnMount && typeof condition === "undefined") || condition) {
-      execute();
+      execute(initialExecuteData);
     }
-  }, [executeOnMount, revalidateOnMount, condition, execute]);
+  }, [executeOnMount, revalidateOnMount, condition, execute, initialExecuteData]);
 
   return {
     data,

@@ -38,6 +38,8 @@ type SAROptions<T = any> = {
     dedupingInterval?: number;
     /** Execute immediately on mount (ignores condition on first render) */
     executeOnMount?: boolean;
+    /** Initial data to pass when executeOnMount is true */
+    initialExecuteData?: FormData | Record<string, any>;
     /** Success callback */
     onSuccess?: (data: T) => void;
     /** Error callback */
@@ -275,6 +277,6 @@ type Sanitized<T> = T extends Date ? string : T extends File ? {
  * }
  * ```
  */
-declare function useSAR<T>({ action: serverAction, condition, cacheTime, revalidateOnMount, revalidateOnFocus, dedupingInterval, executeOnMount, onSuccess, onError, }: SAROptions<T>): SARReturn<T>;
+declare function useSAR<T>({ action: serverAction, condition, cacheTime, revalidateOnMount, revalidateOnFocus, dedupingInterval, executeOnMount, initialExecuteData, onSuccess, onError, }: SAROptions<T>): SARReturn<T>;
 
 export { type OptimisticUpdate, type SAROptions, type SARReturn, type Sanitized, type ServerActionResponse, createErrorResponse, createSuccessResponse, formDataToObject, objectToFormData, sanitizeForTransport, serverActionRequest, useSAR, withFormTransform };

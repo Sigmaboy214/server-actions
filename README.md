@@ -237,6 +237,7 @@ interface SAROptions<T> {
   revalidateOnFocus?: boolean;               // Refetch when window gains focus
   dedupingInterval?: number;                 // Prevent rapid requests (ms)
   executeOnMount?: boolean;                  // Auto-execute on mount
+  initialExecuteData?: FormData | Record<string, any>; // Data to pass when executeOnMount is true
   onSuccess?: (data: T) => void;             // Success callback
   onError?: (error: string) => void;         // Error callback
 }
@@ -270,6 +271,50 @@ const handleUpdate = async (newName: string) => {
 const { execute } = useSAR({
   action: secureAction,
   condition: user?.isAuthenticated, // Only execute if authenticated
+});
+
+// Execute on mount with data using useEffect
+const { data: user, loading } = useSAR({
+  action: getUserAction,
+  executeOnMount: false, // Don't auto-execute
+});
+
+useEffect(() => {
+  if (userId) {
+    execute({ userId }); // Pass data when ready
+  }
+}, [userId, execute]);
+
+// Alternative: Pass initial data with condition
+const { data: userPosts } = useSAR({
+  action: getUserPostsAction,
+  condition: !!userId, // Only execute if userId exists
+  executeOnMount: true, // Will execute on mount but only if condition is true
+});
+
+// For static data that doesn't need parameters
+const { data: categories } = useSAR({
+  action: getCategoriesAction,
+  executeOnMount: true, // Perfect for data that doesn't need params
+});
+
+// Execute on mount with initial data
+const { data: userProfile } = useSAR({
+  action: getUserProfileAction,
+  executeOnMount: true,
+  initialExecuteData: { userId }, // Data passed to execute on mount
+  condition: !!userId, // Still respect conditions
+});
+
+// Complex initial data
+const { data: searchResults } = useSAR({
+  action: searchAction,
+  executeOnMount: true,
+  initialExecuteData: {
+    query: initialSearchQuery,
+    filters: { category: 'all', sortBy: 'date' },
+    page: 1
+  }
 });
 ```
 
@@ -475,6 +520,117 @@ export function UserPosts({ userId }: { userId: string }) {
       <PostsList posts={posts} onOptimisticAdd={handleOptimisticAdd} />
     </div>
   );
+}
+```
+
+## Common Patterns
+
+### Execute on Mount with Data
+
+There are several ways to handle data when using `executeOnMount: true`:
+
+#### 1. **Static Data (No Parameters)**
+```tsx
+// Perfect for data that doesn't need any parameters
+const { data: categories } = useSAR({
+  action: getCategoriesAction,
+  executeOnMount: true,
+});
+```
+
+#### 2. **Initial Data with executeOnMount**
+```tsx
+// Pass data directly to executeOnMount
+function UserProfile({ userId }: { userId: string }) {
+  const { data: user, loading } = useSAR({
+    action: getUserAction,
+    executeOnMount: true,
+    initialExecuteData: { userId }, // ✅ Data passed on mount
+    condition: !!userId, // Only execute if userId exists
+  });
+
+  return loading ? <Spinner /> : <UserCard user={user} />;
+}
+```
+
+#### 3. **useEffect Pattern (More Control)**
+```tsx
+// When you need more control over when to execute
+function UserPosts({ userId }: { userId: string }) {
+  const { data: posts, execute, loading } = useSAR({
+    action: getUserPostsAction,
+    executeOnMount: false, // ❌ Don't auto-execute
+  });
+
+  useEffect(() => {
+    if (userId) {
+      execute({ userId }); // ✅ Execute when ready with data
+    }
+  }, [userId, execute]);
+
+  return loading ? <Spinner /> : <PostsList posts={posts} />;
+}
+```
+
+#### 4. **Conditional Execution**
+```tsx
+// Execute on mount only when conditions are met
+function Dashboard({ user }: { user?: User }) {
+  const { data: dashboardData } = useSAR({
+    action: getDashboardAction,
+    executeOnMount: true,
+    initialExecuteData: { userId: user?.id },
+    condition: user?.isAuthenticated && !!user?.id, // Only execute when ready
+    revalidateOnFocus: true,
+  });
+
+  return <DashboardView data={dashboardData} />;
+}
+```
+
+#### 5. **Dynamic Initial Data**
+```tsx
+// When initial data comes from props or state
+function SearchResults({ searchQuery, filters }: SearchProps) {
+  const { data: results, loading, execute } = useSAR({
+    action: searchAction,
+    executeOnMount: true,
+    initialExecuteData: {
+      query: searchQuery,
+      filters,
+      page: 1
+    },
+    condition: !!searchQuery, // Only search if query exists
+  });
+
+  // Re-execute when search params change
+  useEffect(() => {
+    if (searchQuery) {
+      execute({ query: searchQuery, filters, page: 1 });
+    }
+  }, [searchQuery, filters]);
+
+  return <SearchView results={results} loading={loading} />;
+}
+```
+
+#### 6. **URL Parameters Pattern**
+```tsx
+// Common Next.js pattern with URL params
+function ProductPage({ params }: { params: { id: string } }) {
+  const { data: product, loading, error } = useSAR({
+    action: getProductAction,
+    executeOnMount: true,
+    initialExecuteData: { productId: params.id },
+    condition: !!params.id,
+    cacheTime: 60000, // Cache for 1 minute
+  });
+
+  if (loading) return <ProductSkeleton />;
+  if (error) return <ErrorPage error={error} />;
+  if (!product) return <NotFound />;
+
+  return <ProductDetails product={product} />;
 }
 ```
 

@@ -43,6 +43,8 @@ export type SAROptions<T = any> = {
   dedupingInterval?: number;
   /** Execute immediately on mount (ignores condition on first render) */
   executeOnMount?: boolean;
+  /** Initial data to pass when executeOnMount is true */
+  initialExecuteData?: FormData | Record<string, any>;
   /** Success callback */
   onSuccess?: (data: T) => void;
   /** Error callback */
