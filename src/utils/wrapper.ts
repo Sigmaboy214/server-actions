@@ -120,10 +120,22 @@ type Sanitized<T> = T extends Date
  * // Result: { ok: true, message: "...", data: sanitizedUser }
  * ```
  */
+// Type helpers for different response patterns
+type ResponseWithData<D> = { data: D; message?: string };
+type ResponseWithOk<D> = { ok: true; data: D; message?: string } | { ok: false; error: any; message?: string };
+type ResponseWithError = { error: any; message?: string };
+
+// Extract data type from different response patterns
+type ExtractDataType<R> = 
+  R extends { ok: true; data: infer D } ? D :
+  R extends { data: infer D } ? D :
+  R extends ResponseWithError ? never :
+  R;
+
 export function withFormTransform<T, R>(
   serverAction: (data: T) => Promise<R> | R
-) {
-  return async (formData: FormData): Promise<ServerActionResponse<Sanitized<R>>> => {
+): (formData: FormData) => Promise<ServerActionResponse<Sanitized<ExtractDataType<R>>>> {
+  return async (formData: FormData): Promise<ServerActionResponse<Sanitized<ExtractDataType<R>>>> => {
     try {
       const parsedData = formDataToObject<T>(formData);
       const result = await serverAction(parsedData);
@@ -139,7 +151,7 @@ export function withFormTransform<T, R>(
             return {
               ok: true,
               message: response.message || "Operation completed successfully",
-              data: sanitizeDataForClient(response.data) as Sanitized<R>
+              data: sanitizeDataForClient(response.data) as Sanitized<ExtractDataType<R>>
             };
           } else {
             // Error response - throw error to trigger catch block
@@ -153,7 +165,7 @@ export function withFormTransform<T, R>(
           return {
             ok: true,
             message: response.message || "Operation completed successfully",
-            data: sanitizeDataForClient(response.data) as Sanitized<R>
+            data: sanitizeDataForClient(response.data) as Sanitized<ExtractDataType<R>>
           };
         }
         
@@ -169,7 +181,7 @@ export function withFormTransform<T, R>(
       return {
         ok: true,
         message: "Operation completed successfully",
-        data: sanitizedResult as Sanitized<R>
+        data: sanitizedResult as Sanitized<ExtractDataType<R>>
       };
     } catch (error) {
       return {
