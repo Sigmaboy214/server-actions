@@ -144,15 +144,51 @@ type Sanitized$1<T> = T extends Date ? string : T extends File ? {
  * - Wraps results in ServerActionResponse format
  * - Sanitizes data for client consumption
  * - Handles errors gracefully
+ * - **Smart Response Detection**: Detects response patterns and handles accordingly
  *
- * @param serverAction - Server action that returns data directly
+ * **Supported Response Patterns**:
+ * 1. `{ ok: true, message: string, data: any }` → Uses your custom success message
+ * 2. `{ ok: false, message: string, error: any }` → Throws error with your message
+ * 3. `{ data: any, message?: string }` → Success with optional custom message
+ * 4. `{ error: any, message?: string }` → Throws error with optional message
+ * 5. `any` → Wraps in default success response
+ *
+ * @param serverAction - Server action that returns data or response object
  * @returns Function that accepts FormData and returns ServerActionResponse with sanitized data
  *
  * @example
  * ```ts
- * // Your server action (returns data directly)
- * const createUser = withFormTransform(async (data: { name: string }) => {
- *   return await db.user.create({ data });
+ * // Pattern 1: Direct data (auto-wrapped)
+ * const getUser = withFormTransform(async (data: { id: string }) => {
+ *   return await db.user.findUnique({ where: { id: data.id } });
+ *   // → { ok: true, message: "Operation completed successfully", data: user }
+ * });
+ *
+ * // Pattern 2: Custom success message
+ * const createUser = withFormTransform(async (data: CreateUserInput) => {
+ *   const user = await db.user.create({ data });
+ *   return {
+ *     ok: true,
+ *     message: "User created successfully",
+ *     data: user
+ *   };
+ *   // → { ok: true, message: "User created successfully", data: user }
+ * });
+ *
+ * // Pattern 3: Error handling with custom message
+ * const deleteUser = withFormTransform(async (data: { id: string }) => {
+ *   const user = await db.user.findUnique({ where: { id: data.id } });
+ *   if (!user) {
+ *     return {
+ *       ok: false,
+ *       message: "User not found",
+ *       error: new Error("User not found")
+ *     };
+ *     // → Throws error → { ok: false, message: "User not found", error: ... }
+ *   }
+ *
+ *   await db.user.delete({ where: { id: data.id } });
+ *   return { ok: true, message: "User deleted successfully", data: null };
  * });
  *
  * // Usage (automatically handles FormData → object conversion)
