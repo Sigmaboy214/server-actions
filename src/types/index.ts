@@ -25,12 +25,12 @@ export type ServerActionResponse<T> =
 
 /**
  * Configuration options for the useSAR hook
- * 
+ *
  * @template T The expected data type returned by the server action
  */
 export type SAROptions<T = any> = {
   /** Server action wrapped with withFormTransform */
-  action: (data: FormData) => Promise<ServerActionResponse<T>>;
+  action: (...args: any[]) => Promise<ServerActionResponse<T>>;
   /** Condition to execute the action. If false, won't execute */
   condition?: boolean;
   /** Time in ms to keep data in cache. 0 = no cache */
@@ -53,7 +53,7 @@ export type SAROptions<T = any> = {
 
 /**
  * Return type of the useSAR hook
- * 
+ *
  * @template T The expected data type returned by the server action
  */
 export type SARReturn<T> = {
@@ -64,7 +64,9 @@ export type SARReturn<T> = {
   /** Current loading state */
   loading: boolean;
   /** Function to manually execute the server action */
-  execute: (data?: FormData | Record<string, any>) => Promise<ServerActionResponse<T> | void>;
+  execute: (
+    data?: FormData | Record<string, any>
+  ) => Promise<ServerActionResponse<T> | void>;
   /** Function to refetch with the same previous data */
   refetch: () => Promise<ServerActionResponse<T> | void>;
   /** Directly mutate local data */
@@ -77,7 +79,7 @@ export type SARReturn<T> = {
 
 /**
  * Function type for optimistic updates
- * 
+ *
  * @template T The data type being updated
  * @param currentData The current data (may be undefined)
  * @returns The new data (may be undefined)
